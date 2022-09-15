@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { StyledButton } from "../../styles/GlobalStyles";
+import RepoItem from "../RepoItem";
 
 interface RepoListProps {
   list: any;
@@ -9,38 +10,31 @@ interface RepoListProps {
 
 const RepoList = ({ list, isLoading }: RepoListProps) => {
   if (isLoading) {
-    return <>...검색중...</>;
+    return <StyledCenteredBlock>...검색중...</StyledCenteredBlock>;
   }
+
+  if (list === null) {
+    return (
+      <StyledCenteredBlock>
+        레포지터리 이름으로 검색하세요 🔍
+      </StyledCenteredBlock>
+    );
+  }
+
+  if (list.length < 1) {
+    return (
+      <StyledCenteredBlock>
+        레포지터리를 찾을 수 없습니다 🙀
+      </StyledCenteredBlock>
+    );
+  }
+
   return (
     <>
       <ul>
-        <StyledRepoItem>
-          <strong>garter</strong>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque1
-            autem deleniti ducimus esse facere itaque molestias non numquam
-            praesentium, quibusdam recusandae tempora, tempore vel veniam vero,
-            voluptates. Facere, tempore.
-          </p>
-          <StyledStarBtn type="button">
-            <span>⭐</span>
-            <span>24</span>
-          </StyledStarBtn>
-        </StyledRepoItem>
-
-        <StyledRepoItem>
-          <strong>garter</strong>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque1
-            autem deleniti ducimus esse facere itaque molestias non numquam
-            praesentium, quibusdam recusandae tempora, tempore vel veniam vero,
-            voluptates. Facere, tempore.
-          </p>
-          <StyledStarBtn type="button">
-            <span>⭐</span>
-            <span>24</span>
-          </StyledStarBtn>
-        </StyledRepoItem>
+        {list.map((repo: any) => (
+          <RepoItem key={repo.id} details={repo} />
+        ))}
       </ul>
 
       <StyledBtnBox>
@@ -54,37 +48,8 @@ const RepoList = ({ list, isLoading }: RepoListProps) => {
 
 export default RepoList;
 
-const StyledRepoItem = styled.li`
-  margin-bottom: 40px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-
-  strong {
-    display: block;
-    margin-bottom: 5px;
-  }
-
-  p {
-    margin-bottom: 10px;
-  }
-`;
-
-const StyledStarBtn = styled(StyledButton)`
-  font-size: 0.9rem;
-  background-color: #fff;
-
-  span {
-    &:first-child {
-      font-size: 12px;
-      margin-right: 8px;
-    }
-
-    &:last-child {
-      font-size: 14px;
-    }
-  }
+const StyledCenteredBlock = styled.div`
+  text-align: center;
 `;
 
 const StyledBtnBox = styled.div`

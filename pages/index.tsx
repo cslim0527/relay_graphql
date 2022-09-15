@@ -1,20 +1,57 @@
 import type { NextPage } from "next";
+import { AppRepositoryNameQueryState } from "../types";
+import { pages_index_AppRepositoryNameQuery } from "../__generated__/pages_index_AppRepositoryNameQuery.graphql";
+
+import { useState } from "react";
+import { graphql, fetchQuery } from "relay-runtime";
+import relayEnvironment from "../utils/relayEnvironment";
 
 import Head from "next/head";
 import RepoList from "../components/RepoList";
 import Container from "../components/Container";
 import SearchBox from "../components/SearchBox";
-import { useState } from "react";
+
+const RepositoryNameQuery = graphql`
+  query pages_index_AppRepositoryNameQuery($keyword: String!) {
+    search(query: $keyword, type: REPOSITORY, first: 20) {
+      edges {
+        node {
+          ... on Repository {
+            id
+            name
+            stargazerCount
+            url
+            viewerHasStarred
+            shortDescriptionHTML
+          }
+        }
+      }
+    }
+  }
+`;
+
+const edgeFormatter = (data: any) => {
+  return data?.map((item: any) => item?.node);
+};
 
 const Home: NextPage = () => {
-  const [isLoading, setLoading] = useState(false);
-  const handleSearchRepo = (keyword: string) => {
-    console.log("[handleSearchRepo]", keyword);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [list, setList] = useState<AppRepositoryNameQueryState>(null);
+
+  const handleSearchRepo = async (keyword: string) => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    const response = await fetchQuery<pages_index_AppRepositoryNameQuery>(
+      relayEnvironment,
+      RepositoryNameQuery,
+      {
+        keyword,
+      }
+    ).toPromise();
+
+    setLoading(false);
+    setList(edgeFormatter(response?.search.edges));
   };
+
   return (
     <>
       <Head>
@@ -25,7 +62,7 @@ const Home: NextPage = () => {
 
       <Container>
         <SearchBox handler={handleSearchRepo} isLoading={isLoading} />
-        <RepoList list={[]} isLoading={isLoading} />
+        <RepoList list={list} isLoading={isLoading} />
       </Container>
     </>
   );

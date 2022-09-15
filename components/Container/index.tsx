@@ -12,5 +12,7 @@ const Container: FC<ContainerProps> = ({ children }) => {
 export default Container;
 
 const StyledContainer = styled.div`
-  padding: 40px 16px;
+  width: 1024px;
+  margin: 0 auto;
+  padding: 0 16px 80px 0;
 `;

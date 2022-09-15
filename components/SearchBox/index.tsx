@@ -14,12 +14,23 @@ const SearchBox = ({ handler, isLoading }: SearchBoxProps) => {
     handler && handler(keyword);
   };
 
+  const handleEnterKeyEvent = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handler && handler(keyword);
+    }
+  };
+
   const handleChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
   };
+
   return (
     <StyledSearchBox>
-      <StyledSearchInput type="text" onChange={handleChangeKeyword} />
+      <StyledSearchInput
+        type="text"
+        onChange={handleChangeKeyword}
+        onKeyUp={handleEnterKeyEvent}
+      />
       <StyledSearchBtn
         type="button"
         onClick={handleSearchEvent}
@@ -34,10 +45,15 @@ const SearchBox = ({ handler, isLoading }: SearchBoxProps) => {
 export default SearchBox;
 
 const StyledSearchBox = styled.article`
-  max-width: 40%;
-  margin: 0 auto 40px auto;
+  position: sticky;
+  top: 0;
+  height: 120px;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
   gap: 5px;
+  background-color: #fff;
 `;
 
 const StyledSearchInput = styled.input`
@@ -45,6 +61,7 @@ const StyledSearchInput = styled.input`
   padding: 0.4rem 0.6rem;
   border: 1px solid #e8e8e8;
   flex: 1;
+  max-width: 40%;
 `;
 
 const StyledSearchBtn = styled(StyledButton)`

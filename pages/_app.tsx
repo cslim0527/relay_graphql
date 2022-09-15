@@ -1,15 +1,16 @@
 import type { AppProps } from "next/app";
 import { GlobalStyles } from "../styles/GlobalStyles";
 
-/**
- * Github Token: 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
- * */
+import { RelayEnvironmentProvider } from "react-relay/hooks";
+import relayEnvironment from "../utils/relayEnvironment";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <GlobalStyles />
-      <Component {...pageProps} />
+      <RelayEnvironmentProvider environment={relayEnvironment}>
+        <Component {...pageProps} />
+      </RelayEnvironmentProvider>
     </>
   );
 }
