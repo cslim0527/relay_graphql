@@ -10,7 +10,7 @@ const RepoItem = ({ details }: any) => {
         {details?.name}
       </a>
 
-      <p>{details?.shortDescriptionHTML}</p>
+      <p dangerouslySetInnerHTML={{ __html: details?.shortDescriptionHTML }} />
 
       <StarBtn
         starrableId={details?.id}

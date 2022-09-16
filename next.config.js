@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    GITHUB_TOKEN: "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",
+    GITHUB_TOKEN: "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",
   },
   reactStrictMode: true,
   swcMinify: true,
