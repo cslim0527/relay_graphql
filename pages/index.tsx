@@ -2,7 +2,8 @@ import type { NextPage } from "next";
 import { AppRepositoryNameQueryState } from "../types";
 import { pages_index_AppRepositoryNameQuery } from "../__generated__/pages_index_AppRepositoryNameQuery.graphql";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useQueryLoader } from "react-relay";
 import { graphql, fetchQuery } from "relay-runtime";
 import relayEnvironment from "../utils/relayEnvironment";
 
@@ -37,6 +38,12 @@ const edgeFormatter = (data: any) => {
 const Home: NextPage = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [list, setList] = useState<AppRepositoryNameQueryState>(null);
+  const [queryRef, loadQuery, disposeQuery] =
+    useQueryLoader(RepositoryNameQuery);
+
+  console.log("[queryRef]", queryRef);
+
+  useEffect(() => {}, []);
 
   const handleSearchRepo = async (keyword: string) => {
     setLoading(true);
@@ -48,6 +55,7 @@ const Home: NextPage = () => {
       }
     ).toPromise();
 
+    loadQuery({ keyword }, { fetchPolicy: "store-or-network" });
     setLoading(false);
     setList(edgeFormatter(response?.search.edges));
   };
