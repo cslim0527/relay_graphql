@@ -1,9 +1,8 @@
 import type { NextPage } from "next";
-import { AppRepositoryNameQueryState } from "../types";
-import { pages_index_AppRepositoryNameQuery } from "../__generated__/pages_index_AppRepositoryNameQuery.graphql";
+import type { pages_index_AppRepositoryListQuery } from "../__generated__/pages_index_AppRepositoryListQuery.graphql";
 
-import { useEffect, useState } from "react";
-import { useQueryLoader } from "react-relay";
+import React, { useState } from "react";
+import { QueryRenderer } from "react-relay";
 import { graphql, fetchQuery } from "relay-runtime";
 import relayEnvironment from "../utils/relayEnvironment";
 
@@ -12,52 +11,16 @@ import RepoList from "../components/RepoList";
 import Container from "../components/Container";
 import SearchBox from "../components/SearchBox";
 
-const RepositoryNameQuery = graphql`
-  query pages_index_AppRepositoryNameQuery($keyword: String!) {
-    search(query: $keyword, type: REPOSITORY, first: 20) {
-      edges {
-        node {
-          ... on Repository {
-            id
-            name
-            stargazerCount
-            url
-            viewerHasStarred
-            shortDescriptionHTML
-          }
-        }
-      }
-    }
+const RepositoryListQuery = graphql`
+  query pages_index_AppRepositoryListQuery($keyword: String!) {
+    ...RepoList_list @arguments(keyword: $keyword)
   }
 `;
 
-const edgeFormatter = (data: any) => {
-  return data?.map((item: any) => item?.node);
-};
-
 const Home: NextPage = () => {
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [list, setList] = useState<AppRepositoryNameQueryState>(null);
-  const [queryRef, loadQuery, disposeQuery] =
-    useQueryLoader(RepositoryNameQuery);
-
-  console.log("[queryRef]", queryRef);
-
-  useEffect(() => {}, []);
-
+  const [keyword, setKeyword] = useState<string>("123");
   const handleSearchRepo = async (keyword: string) => {
-    setLoading(true);
-    const response = await fetchQuery<pages_index_AppRepositoryNameQuery>(
-      relayEnvironment,
-      RepositoryNameQuery,
-      {
-        keyword,
-      }
-    ).toPromise();
-
-    loadQuery({ keyword }, { fetchPolicy: "store-or-network" });
-    setLoading(false);
-    setList(edgeFormatter(response?.search.edges));
+    setKeyword(keyword);
   };
 
   return (
@@ -69,8 +32,26 @@ const Home: NextPage = () => {
       </Head>
 
       <Container>
-        <SearchBox handler={handleSearchRepo} isLoading={isLoading} />
-        <RepoList list={list} isLoading={isLoading} />
+        <SearchBox handler={handleSearchRepo} />
+        <QueryRenderer<pages_index_AppRepositoryListQuery>
+          environment={relayEnvironment}
+          query={RepositoryListQuery}
+          variables={{
+            keyword,
+          }}
+          render={({ error, props }) => {
+            if (error) {
+              return <div>{error.message}</div>;
+            } else if (!props) {
+              return <div>..화면을 로딩중..</div>;
+            }
+            return (
+              <>
+                <RepoList list={props} />
+              </>
+            );
+          }}
+        />
       </Container>
     </>
   );
