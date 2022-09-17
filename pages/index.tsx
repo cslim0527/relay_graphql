@@ -1,27 +1,38 @@
 import type { NextPage } from "next";
-import type { pages_index_AppRepositoryListQuery } from "../__generated__/pages_index_AppRepositoryListQuery.graphql";
 
-import React, { useState } from "react";
-import { QueryRenderer } from "react-relay";
-import { graphql, fetchQuery } from "relay-runtime";
+import { Suspense, useEffect, useState } from "react";
+import { useLazyLoadQuery } from "react-relay";
+import { graphql } from "relay-runtime";
 import relayEnvironment from "../utils/relayEnvironment";
 
 import Head from "next/head";
 import RepoList from "../components/RepoList";
 import Container from "../components/Container";
 import SearchBox from "../components/SearchBox";
+import CenteredText from "../components/CenteredText";
 
-const RepositoryListQuery = graphql`
+const AppQuery = graphql`
   query pages_index_AppRepositoryListQuery($keyword: String!) {
     ...RepoList_list @arguments(keyword: $keyword)
   }
 `;
 
 const Home: NextPage = () => {
-  const [keyword, setKeyword] = useState<string>("123");
+  const [queryRef, setQueryRef] = useState<any>(undefined);
+  const [keyword, setKeyword] = useState<string>("");
+  const initialQueryRef = useLazyLoadQuery(AppQuery, { keyword });
+
   const handleSearchRepo = async (keyword: string) => {
     setKeyword(keyword);
   };
+
+  useEffect(() => {
+    if (!initialQueryRef) {
+      return;
+    }
+
+    setQueryRef(initialQueryRef);
+  }, [initialQueryRef]);
 
   return (
     <>
@@ -33,25 +44,13 @@ const Home: NextPage = () => {
 
       <Container>
         <SearchBox handler={handleSearchRepo} />
-        <QueryRenderer<pages_index_AppRepositoryListQuery>
-          environment={relayEnvironment}
-          query={RepositoryListQuery}
-          variables={{
-            keyword,
-          }}
-          render={({ error, props }) => {
-            if (error) {
-              return <div>{error.message}</div>;
-            } else if (!props) {
-              return <div>..화면을 로딩중..</div>;
-            }
-            return (
-              <>
-                <RepoList list={props} />
-              </>
-            );
-          }}
-        />
+        {keyword === "" ? (
+          <CenteredText>레포지터리 이름으로 검색하세요 🔍</CenteredText>
+        ) : (
+          <Suspense fallback={<CenteredText>...로딩중...</CenteredText>}>
+            <RepoList initialQueryRef={queryRef} />
+          </Suspense>
+        )}
       </Container>
     </>
   );

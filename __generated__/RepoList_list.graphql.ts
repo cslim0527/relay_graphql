@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6461d82b220f23612e555c49e3413302>>
+ * @generated SignedSource<<29ee48b455dbd26bcb127c37927b0032>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { Fragment, ReaderFragment } from 'relay-runtime';
+import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type RepoList_list$data = {
   readonly search: {
@@ -33,8 +33,17 @@ export type RepoList_list$key = {
   readonly " $fragmentSpreads": FragmentRefs<"RepoList_list">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = [
+  "search"
+];
+return {
   "argumentDefinitions": [
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "cursor"
+    },
     {
       "defaultValue": 20,
       "kind": "LocalArgument",
@@ -51,13 +60,23 @@ const node: ReaderFragment = {
     "connection": [
       {
         "count": "first",
-        "cursor": null,
+        "cursor": "cursor",
         "direction": "forward",
-        "path": [
-          "search"
-        ]
+        "path": (v0/*: any*/)
       }
-    ]
+    ],
+    "refetch": {
+      "connection": {
+        "forward": {
+          "count": "first",
+          "cursor": "cursor"
+        },
+        "backward": null,
+        "path": (v0/*: any*/)
+      },
+      "fragmentPathInResult": [],
+      "operation": require('./RepoListPaginationQuery.graphql')
+    }
   },
   "name": "RepoList_list",
   "selections": [
@@ -197,7 +216,8 @@ const node: ReaderFragment = {
   "type": "Query",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "76e48c54183e03b139eb2e09eca28d79";
+(node as any).hash = "028345916b7306e9199d21fdf27f704d";
 
 export default node;

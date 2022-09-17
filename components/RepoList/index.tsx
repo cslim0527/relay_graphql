@@ -1,90 +1,70 @@
-import React from "react";
 import styled from "styled-components";
 import { StyledButton } from "../../styles/GlobalStyles";
-import RepoItem from "../RepoItem";
-import { createPaginationContainer, graphql } from "react-relay";
-import { getPaginationVariables } from "relay-runtime";
+import { graphql, usePaginationFragment } from "react-relay";
 
-const SearchedRepoListFragment = {
-  list: graphql`
-    fragment RepoList_list on Query
-    @argumentDefinitions(
-      keyword: { type: "String!" }
-      first: { type: "Int", defaultValue: 20 }
-    ) {
-      search(query: $keyword, type: REPOSITORY, first: $first)
-        @connection(key: "SearchRepoList_list__search") {
-        edges {
-          node {
-            ... on Repository {
-              id
-              name
-              stargazerCount
-              url
-              viewerHasStarred
-              shortDescriptionHTML
-            }
+import RepoItem from "../RepoItem";
+import CenteredText from "../CenteredText";
+
+const SearchedRepoListFragment = graphql`
+  fragment RepoList_list on Query
+  @argumentDefinitions(
+    keyword: { type: "String!" }
+    first: { type: "Int", defaultValue: 20 }
+    cursor: { type: "String" }
+  )
+  @refetchable(queryName: "RepoListPaginationQuery") {
+    search(query: $keyword, type: REPOSITORY, first: $first, after: $cursor)
+      @connection(key: "SearchRepoList_list__search") {
+      edges {
+        node {
+          ... on Repository {
+            id
+            name
+            stargazerCount
+            url
+            viewerHasStarred
+            shortDescriptionHTML
           }
         }
-        pageInfo {
-          hasNextPage
-        }
+      }
+      pageInfo {
+        hasNextPage
       }
     }
-  `,
-};
-
-interface RepoListProps {
-  list: any;
-  isLoading?: boolean;
-  relay: any;
-}
-
-const RepoList = (props: RepoListProps) => {
-  const { list } = props;
-  const isLoading = props?.relay.isLoading();
-  console.log("[props]", props?.relay);
-  const {
-    search: { edges },
-  } = list;
-
-  console.log("[list]", list);
-
-  if (isLoading) {
-    return <StyledCenteredBlock>...검색중...</StyledCenteredBlock>;
   }
+`;
 
-  if (edges === null) {
-    return (
-      <StyledCenteredBlock>
-        레포지터리 이름으로 검색하세요 🔍
-      </StyledCenteredBlock>
-    );
-  }
+// interface RepoListProps {
+//   list: any;
+//   isLoading?: boolean;
+//   relay: any;
+// }
 
-  if (edges.length < 1) {
-    return (
-      <StyledCenteredBlock>
-        레포지터리를 찾을 수 없습니다 🙀
-      </StyledCenteredBlock>
-    );
+const RepoList = (props: any) => {
+  const { data, loadNext, hasNext } = usePaginationFragment(
+    SearchedRepoListFragment,
+    props.initialQueryRef
+  );
+
+  console.log("[data]", data);
+  console.log("[hasNext]", loadNext);
+
+  if (data.search.edges < 1) {
+    return <CenteredText>레포지터리를 찾을 수 없습니다 🙀</CenteredText>;
   }
 
   return (
     <>
       <ul>
-        {edges.map(({ node }: any) => (
+        {data.search.edges.map(({ node }: any) => (
           <RepoItem key={node.id} details={node} />
         ))}
       </ul>
-
       <StyledBtnBox>
         <StyledMoreBtn
           type="button"
-          disabled={!props?.relay.hasMore()}
-          onClick={() => {
-            props?.relay.loadMore(20);
-          }}
+          disabled={!hasNext}
+          onClick={() => loadNext(20)}
         >
           더 보기
         </StyledMoreBtn>
@@ -93,15 +73,7 @@ const RepoList = (props: RepoListProps) => {
   );
 };
 
-export default createPaginationContainer(
-  RepoList,
-  SearchedRepoListFragment,
-  {}
-);
-
-const StyledCenteredBlock = styled.div`
-  text-align: center;
-`;
+export default RepoList;
 
 const StyledBtnBox = styled.div`
   margin-top: 10px;
