@@ -19,7 +19,7 @@ interface Props {
 const RepoItem = ({ details }: Props) => {
   return (
     <StyledRepoItem key={details?.id}>
-      <a href={details?.url} target="_blank">
+      <a href={details?.url} target="_blank" rel="noreferrer">
         {details?.name}
       </a>
 
