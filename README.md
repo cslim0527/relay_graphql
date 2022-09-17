@@ -18,7 +18,7 @@ Github API 사용을 위한 개인 액세스 토큰을 발급 받아 복사합�
 ### 3. Github Personal Access Token 세팅
 
 복사해둔 토큰을 프로젝트 <code>Root</code> 폴더 아래 <code>.env</code>
-파일을 생성해 <code>NEXT_PUBLIC_GITHUB_TOKEN</code> 변수에 담아둡니다.
+파일을 생성해 <code>NEXT_PUBLIC_GITHUB_TOKEN</code> 변수로 세팅해주세요.
 
 ```bash
 touch .env
