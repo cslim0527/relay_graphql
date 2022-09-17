@@ -36,7 +36,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Next.js with Relay</title>
+        <title>그린랩스</title>
         <meta name="description" content="Greenlabs Front-End Interview" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
