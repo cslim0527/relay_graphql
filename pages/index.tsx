@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 import { Suspense, useEffect, useState } from "react";
 import { useLazyLoadQuery } from "react-relay";
 import { graphql } from "relay-runtime";
-import relayEnvironment from "../utils/relayEnvironment";
 
 import Head from "next/head";
 import RepoList from "../components/RepoList";

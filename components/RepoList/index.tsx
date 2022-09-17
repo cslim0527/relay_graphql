@@ -1,3 +1,6 @@
+import type { RepoList_list$key } from "../../__generated__/RepoList_list.graphql";
+import type { RepoListPaginationQuery } from "../../__generated__/RepoListPaginationQuery.graphql";
+
 import styled from "styled-components";
 import { StyledButton } from "../../styles/GlobalStyles";
 import { graphql, usePaginationFragment } from "react-relay";
@@ -34,39 +37,54 @@ const SearchedRepoListFragment = graphql`
   }
 `;
 
-// interface RepoListProps {
-//   list: any;
-//   isLoading?: boolean;
-//   relay: any;
-// }
+interface RepoDetailProps {
+  readonly id?: string;
+  readonly name?: string;
+  readonly shortDescriptionHTML?: any;
+  readonly stargazerCount?: number;
+  readonly url?: any;
+  readonly viewerHasStarred?: boolean;
+}
 
-const RepoList = (props: any) => {
-  const { data, loadNext, hasNext } = usePaginationFragment(
-    SearchedRepoListFragment,
-    props.initialQueryRef
-  );
+interface RepoItemProps {
+  readonly node: RepoDetailProps | null;
+}
 
-  console.log("[data]", data);
-  console.log("[hasNext]", loadNext);
+interface Props {
+  initialQueryRef: RepoList_list$key;
+}
 
-  if (data.search.edges < 1) {
+const RepoList = ({ initialQueryRef }: Props) => {
+  const { data, loadNext, hasNext, isLoadingNext } = usePaginationFragment<
+    RepoListPaginationQuery,
+    RepoList_list$key
+  >(SearchedRepoListFragment, initialQueryRef);
+
+  const {
+    search: { edges },
+  } = data;
+
+  if (!edges || edges.length < 1) {
     return <CenteredText>레포지터리를 찾을 수 없습니다 🙀</CenteredText>;
   }
 
   return (
     <>
       <ul>
-        {data.search.edges.map(({ node }: any) => (
-          <RepoItem key={node.id} details={node} />
+        {edges.map((item: RepoItemProps | null) => (
+          <RepoItem
+            key={item?.node?.id}
+            details={item?.node as RepoDetailProps}
+          />
         ))}
       </ul>
       <StyledBtnBox>
         <StyledMoreBtn
           type="button"
-          disabled={!hasNext}
+          disabled={!hasNext || isLoadingNext}
           onClick={() => loadNext(20)}
         >
-          더 보기
+          {isLoadingNext ? "...불러오는중..." : "더 보기"}
         </StyledMoreBtn>
       </StyledBtnBox>
     </>

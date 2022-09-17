@@ -5,7 +5,7 @@ const fetchGraphQL = async (query: string | null, variables: Variables) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `bearer ${process.env.GITHUB_TOKEN}`,
+      Authorization: `bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
     },
     body: JSON.stringify({
       query,

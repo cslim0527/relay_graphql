@@ -3,7 +3,20 @@ import styled from "styled-components";
 
 import StarBtn from "../StarBtn";
 
-const RepoItem = ({ details }: any) => {
+interface RepoDetailProps {
+  readonly id?: string;
+  readonly name?: string;
+  readonly shortDescriptionHTML?: any;
+  readonly stargazerCount?: number;
+  readonly url?: any;
+  readonly viewerHasStarred?: boolean;
+}
+
+interface Props {
+  details: RepoDetailProps;
+}
+
+const RepoItem = ({ details }: Props) => {
   return (
     <StyledRepoItem key={details?.id}>
       <a href={details?.url} target="_blank">
@@ -13,7 +26,7 @@ const RepoItem = ({ details }: any) => {
       <p dangerouslySetInnerHTML={{ __html: details?.shortDescriptionHTML }} />
 
       <StarBtn
-        starrableId={details?.id}
+        starrableId={details?.id as string}
         hasStarred={details?.viewerHasStarred}
         stargazerCount={details?.stargazerCount}
       />

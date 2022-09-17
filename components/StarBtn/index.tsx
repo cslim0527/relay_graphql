@@ -15,8 +15,14 @@ import {
 } from "../../__generated__/StarBtn_RemoveStar_Mutation.graphql";
 
 interface UpdateStarParams {
-  stargazerCount: string;
-  viewerHasStarred: boolean;
+  readonly stargazerCount?: number;
+  readonly viewerHasStarred?: boolean;
+}
+
+interface StarBtnProps {
+  readonly hasStarred?: boolean;
+  readonly starrableId: string;
+  readonly stargazerCount?: number;
 }
 
 const RepositoryAddStarMutation = graphql`
@@ -40,12 +46,6 @@ const RepositoryRemoveStarMutation = graphql`
     }
   }
 `;
-
-interface StarBtnProps {
-  hasStarred: boolean | undefined;
-  stargazerCount: string;
-  starrableId: string;
-}
 
 const StarBtn = ({ starrableId, hasStarred, stargazerCount }: StarBtnProps) => {
   const [starrable, setStarrable] = useState(hasStarred);
