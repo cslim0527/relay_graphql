@@ -8950,7 +8950,7 @@ enum DeploymentProtectionRuleType {
 }
 
 """
-A request to deploy a workflow run to an environment.
+A request to deploy a workflows run to an environment.
 """
 type DeploymentRequest {
   """
@@ -53396,7 +53396,7 @@ interface Votable {
 }
 
 """
-A workflow contains meta information about an Actions workflow file.
+A workflows contains meta information about an Actions workflows file.
 """
 type Workflow implements Node {
   """
@@ -53452,7 +53452,7 @@ type Workflow implements Node {
 }
 
 """
-A workflow run.
+A workflows run.
 """
 type WorkflowRun implements Node {
   """
@@ -53588,7 +53588,7 @@ type WorkflowRunEdge {
 }
 
 """
-Ways in which lists of workflow runs can be ordered upon return.
+Ways in which lists of workflows runs can be ordered upon return.
 """
 input WorkflowRunOrder {
   """
@@ -53603,11 +53603,11 @@ input WorkflowRunOrder {
 }
 
 """
-Properties by which workflow run connections can be ordered.
+Properties by which workflows run connections can be ordered.
 """
 enum WorkflowRunOrderField {
   """
-  Order workflow runs by most recently created
+  Order workflows runs by most recently created
   """
   CREATED_AT
 }
