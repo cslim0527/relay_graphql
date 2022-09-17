@@ -7,7 +7,7 @@ import {
 } from "relay-runtime";
 import fetchGraphQL from "./fetcher";
 
-const fetchRelay: FetchFunction = (params, variables) => {
+const fetchQuery: FetchFunction = (params, variables) => {
   console.log(
     `fetching query ${params.name} with ${JSON.stringify(variables)}`
   );
@@ -15,6 +15,6 @@ const fetchRelay: FetchFunction = (params, variables) => {
 };
 
 export default new Environment({
-  network: Network.create(fetchRelay),
+  network: Network.create(fetchQuery),
   store: new Store(new RecordSource()),
 });

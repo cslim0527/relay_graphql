@@ -10,14 +10,28 @@ interface SearchBoxProps {
 const SearchBox = ({ handler, isLoading }: SearchBoxProps) => {
   const [keyword, setKeyword] = useState<string>("");
 
+  const keywordLengthValidation = () => {
+    return keyword.length < 2;
+  };
+
   const handleSearchEvent = () => {
+    console.log("[handleSearchEvent]");
+    if (keywordLengthValidation()) {
+      alert("최소 2글자 이상으로 검색해주세요.");
+      return;
+    }
+
     handler && handler(keyword);
   };
 
   const handleEnterKeyEvent = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handler && handler(keyword);
+    if (e.key !== "Enter") return;
+    if (keywordLengthValidation()) {
+      alert("최소 2글자 이상으로 검색해주세요.");
+      return;
     }
+
+    handler && handler(keyword);
   };
 
   const handleChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
