@@ -14,6 +14,7 @@ Github API 사용을 위한 개인 액세스 토큰을 발급 받아 복사합�
 파일을 생성해 <code>NEXT_PUBLIC_GITHUB_TOKEN</code> 변수로 세팅해주세요.
 
 ```bash
+// 명령어 사용 시
 touch .env
 echo NEXT_PUBLIC_GITHUB_TOKEN=발급받은_토큰 >> .env
 ```
