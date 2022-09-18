@@ -26,12 +26,14 @@ npm install
 yarn
 ```
 
-### 4. 실행
+### 4. 빌드 및 실행
 아래 명령어를 통해 프로젝트 로컬환경으로 실행합니다.
 ```bash
-npm run dev
+npm run build
+npm run start
 # or
-yarn dev
+yarn build
+yarn start
 ```
 
 ### 5. 접속경로
